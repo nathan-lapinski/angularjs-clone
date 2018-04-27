@@ -12,7 +12,7 @@ function initWatchVal() {}
 Scope.prototype.$watch = function(watchFn, listenerFn) {
 	this.$$watchers.push({
 		watchFn: watchFn,
-		listenerFn: listenerFn,
+		listenerFn: listenerFn || function() {},
 		last: initWatchVal
 	});
 };
@@ -26,7 +26,7 @@ Scope.prototype.$digest = function() {
 		oldValue = watcherObj.last;
 		if (newValue !== oldValue) {
 			watcherObj.last = newValue;
-			watcherObj.listenerFn(newValue, oldValue, self);
+			watcherObj.listenerFn(newValue, (oldValue === initWatchVal ? newValue : oldValue), self);
 		}
 	});
 };

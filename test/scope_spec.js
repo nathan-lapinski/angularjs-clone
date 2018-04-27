@@ -79,6 +79,29 @@ describe('Scope', function() {
 
   		expect(scope.counter).toBe(1);
   	});
+
+  	it('calls listener with old value set to new value on initial watch', function() {
+  		scope.watchedVal = 123;
+  		var oldValReturned;
+
+  		scope.$watch(function(scope) { return scope.watchedVal; },
+  			function(newVal, oldVal, scope) {
+  			  	oldValReturned = oldVal;
+  			}
+  		);
+
+  		expect(oldValReturned).toBe(undefined);
+  		scope.$digest();
+  		expect(oldValReturned).toBe(123);
+
+  	});
+
+  	it('scope can have watchers which do not provide a listener function', function() {
+  		var watchFn = jasmine.createSpy().and.returnValue('something');
+  		scope.$watch(watchFn);
+  		scope.$digest();
+  		expect(watchFn).toHaveBeenCalled();
+  	});
   });
 
 });
