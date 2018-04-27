@@ -102,6 +102,32 @@ describe('Scope', function() {
   		scope.$digest();
   		expect(watchFn).toHaveBeenCalled();
   	});
+
+  	it('should keep digesting while values are still dirty', function() {
+  		scope.name = 'Sally';
+
+  		scope.$watch(function(scope) {return scope.nameUpper;},
+  			function(newVal, oldVal, scope){
+  				if (newVal) {
+  					scope.initial = newVal.substring(0,1) + '.';
+  				}
+  			}
+  		);
+
+  		scope.$watch(function(scope) {return scope.name;},
+  			function(newVal, oldVal, scope){
+  				if (newVal) {
+  					scope.nameUpper = newVal.toUpperCase();
+  				}
+  			});
+
+  		scope.$digest();
+  		expect(scope.initial).toBe('S');
+
+  		scope.name = 'Alice';
+  		scope.$digest();
+  		expect(scope.initial).toBe('A');
+  	});
   });
 
 });
