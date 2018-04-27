@@ -8,15 +8,21 @@ function Scope() {
 Scope.prototype.$watch = function(watchFn, listenerFn) {
 	this.$$watchers.push({
 		watchFn: watchFn,
-		listenerFn: listenerFn
+		listenerFn: listenerFn,
+		last: undefined
 	});
 };
 
 Scope.prototype.$digest = function() {
-	this.$$watchers.forEach(function(watcherObj){
-		// This is very basic
-		// We want to dirty check each watched value,
-		// and call the listenerFn only if that value has changed.
-		watcherObj.listenerFn();
+	var self = this;
+	var newValue, oldValue;
+
+	this.$$watchers.forEach(function(watcherObj) {
+		newValue = watcherObj.watchFn(self);
+		oldValue = watcherObj.last;
+		if (newValue !== oldValue) {
+			watcherObj.last = newValue;
+			watcherObj.listenerFn(newValue, oldValue, self);
+		}
 	});
 };
