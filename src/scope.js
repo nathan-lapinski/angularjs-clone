@@ -5,11 +5,15 @@ function Scope() {
 	this.$$watchers = [];
 }
 
+// functions are equal only to themselves, so it makes a decent unique initial val
+// although a first checked flag similar to what Angular does.
+function initWatchVal() {}
+
 Scope.prototype.$watch = function(watchFn, listenerFn) {
 	this.$$watchers.push({
 		watchFn: watchFn,
 		listenerFn: listenerFn,
-		last: undefined
+		last: initWatchVal
 	});
 };
 

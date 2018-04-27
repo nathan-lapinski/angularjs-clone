@@ -63,6 +63,22 @@ describe('Scope', function() {
 
   		expect(scope.counter).toBe(2);
   	});
+
+  	it('calls listenerFn when watch value is initialized to undefined', function() {
+  		scope.watchedVal = undefined;
+  		scope.counter = 0;
+
+  		scope.$watch(function(scope) { return scope.watchedVal; },
+  			function(newVal, oldVal, scope) {
+  			  scope.counter++;
+  			}
+  		);
+
+  		expect(scope.counter).toBe(0);
+  		scope.$digest();
+
+  		expect(scope.counter).toBe(1);
+  	});
   });
 
 });
