@@ -17,6 +17,7 @@ Scope.prototype.$watch = function(watchFn, listenerFn) {
 	});
 };
 
+// TODO: Run digest cycle until no changes are found, or error out after X cycles
 Scope.prototype.$digest = function() {
 	var self = this;
 	var newValue, oldValue;
