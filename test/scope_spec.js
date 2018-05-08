@@ -122,11 +122,11 @@ describe('Scope', function() {
   			});
 
   		scope.$digest();
-  		expect(scope.initial).toBe('S');
+  		expect(scope.initial).toBe('S.');
 
   		scope.name = 'Alice';
   		scope.$digest();
-  		expect(scope.initial).toBe('A');
+  		expect(scope.initial).toBe('A.');
   	});
   });
 

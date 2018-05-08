@@ -17,10 +17,10 @@ Scope.prototype.$watch = function(watchFn, listenerFn) {
 	});
 };
 
-// TODO: Run digest cycle until no changes are found, or error out after X cycles
-Scope.prototype.$digest = function() {
+// helper function which does one run of the digest cycle
+Scope.prototype.$$digestOnce = function() {
 	var self = this;
-	var newValue, oldValue;
+	var newValue, oldValue, dirty;
 
 	this.$$watchers.forEach(function(watcherObj) {
 		newValue = watcherObj.watchFn(self);
@@ -28,6 +28,17 @@ Scope.prototype.$digest = function() {
 		if (newValue !== oldValue) {
 			watcherObj.last = newValue;
 			watcherObj.listenerFn(newValue, (oldValue === initWatchVal ? newValue : oldValue), self);
+			dirty = true;
 		}
 	});
+	return dirty;
+};
+
+// Run digest cycle until no changes are found.
+// TODO: Need to avoid infinite loops by digesting only a set number of times.
+Scope.prototype.$digest = function() {
+	var dirty;
+	do {
+		dirty = this.$$digestOnce();
+	} while (dirty);
 };
