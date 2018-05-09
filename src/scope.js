@@ -1,6 +1,8 @@
 /* jshint globalstrict: true */
 'use strict';
 
+var DIGEST_CYCLE_LIMIT = 10;
+
 function Scope() {
 	this.$$watchers = [];
 }
@@ -38,7 +40,12 @@ Scope.prototype.$$digestOnce = function() {
 // TODO: Need to avoid infinite loops by digesting only a set number of times.
 Scope.prototype.$digest = function() {
 	var dirty;
+	var ttl = DIGEST_CYCLE_LIMIT;
+
 	do {
 		dirty = this.$$digestOnce();
+		if (dirty && !(ttl--)) {
+			throw 'max number of digest cycles has been exceeded';
+		}
 	} while (dirty);
 };

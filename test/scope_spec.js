@@ -127,7 +127,25 @@ describe('Scope', function() {
   		scope.name = 'Alice';
   		scope.$digest();
   		expect(scope.initial).toBe('A.');
-  	});
-  });
+	  });
+	  
+	  it('gives up after 10 iterations of the digest cycle', function() {
+		scope.counterA = 0;
+		scope.counterB = 0;
 
+		scope.$watch(
+			function(scope) { return scope.counterB; },
+			function(newVal, oldVal, scope) {
+				scope.counterA++;
+		});
+
+		scope.$watch(
+			function(scope) { return scope.counterA; },
+			function(newVal, oldVal, scope) {
+				scope.counterB++;
+		});
+
+		expect(function() { scope.$digest(); }).toThrow();
+	  });
+  });
 });
